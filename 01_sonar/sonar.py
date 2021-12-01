@@ -10,19 +10,25 @@ measures = inputFile.readlines()
 for index, measure in enumerate(measures):
     measures[index] = int(measure.rstrip("\n"))
 
-auxPre = 0
 incCount = -1
 decCount = 0
 
 sumPre = 0
 
 for index, measure in enumerate(measures):
-    if int(measure.rstrip("\n")) + int(measures[index+1].rstrip("\n"))> auxPre:
+    #The first and last item doesn't have 3 items to sum -> skip
+    if index == 0:
+        continue
+    elif index == len(measures)-1:
+        break
+
+    sum = measure + measures[index+1] + measures[index-1]
+    if sum > sumPre:
         incCount += 1
-    else:
+    elif sum < sumPre:
         decCount += 1
     
-    auxPre = int(measure)
+    sumPre = sum
 
 print("Increased: {} / Decreased: {}".format(incCount, decCount))
     
