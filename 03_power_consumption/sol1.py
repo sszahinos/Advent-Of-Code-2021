@@ -6,38 +6,37 @@ if len(sys.argv) != 2:
 
 #############
 
-FORWARD = "forward"
-UP = "up"
-DOWN = "down"
-
-horizontal = 0
-depth = 0
-
-def goUp(distance):
-    global depth
-    depth -= distance
-
-def goDown(distance):
-    global depth
-    depth += distance
-
-def goForward(distance):
-    global horizontal
-    horizontal += distance
-
 inputFile = open(sys.argv[1], "r")
-steps = inputFile.readlines()
+lines = inputFile.readlines()
 
-#Formatting array
-for index, step in enumerate(steps):
-    steps[index] = step.rstrip("\n")
-    steps[index] = steps[index].split(" ")
-    if steps[index][0] == FORWARD:
-        goForward(int(steps[index][1]))
-    elif steps[index][0] == UP:
-        goUp(int(steps[index][1]))
-    elif steps[index][0] == DOWN:
-        goDown(int(steps[index][1]))
+#Array counting "ones" in each row's column
+#-1 -> don't picking "\n"
+count = [0] * (len(lines[0])-1)
 
-print("Distance: {}\nDepth: {}".format(horizontal, depth))
-print("Puzzle answer: {}".format(horizontal*depth))
+gammaRate = ""
+epsilonRate = ""
+
+for index, line in enumerate(lines):
+    #Formatting array
+    lines[index] = line.rstrip("\n")
+    
+    #Iterating each column to count the "ones"
+    for x in range(len(lines[index])):
+        if lines[index][x] == "1":
+            count[x] += 1
+            
+
+for col in count:
+    if col >= int(len(lines)/2): # one is most common
+        gammaRate += "1"
+        epsilonRate += "0"
+    else: # zero is most common
+        gammaRate += "0"
+        epsilonRate += "1"
+    
+gammaRateInt = int(gammaRate, 2)
+epsilonRateInt = int(epsilonRate, 2)
+
+print("Gamma: {}\nEpsilon: {}\n".format(gammaRate, epsilonRate))
+print("Gamma(dec): {}\nEpsilon(dec): {}\n".format(gammaRateInt, epsilonRateInt))
+print("Puzzle answer: {}".format(gammaRateInt * epsilonRateInt))
