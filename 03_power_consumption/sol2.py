@@ -8,6 +8,9 @@ if len(sys.argv) != 2:
 
 inputFile = open(sys.argv[1], "r")
 lines = inputFile.readlines()
+for index, line in enumerate(lines):
+    #Formatting array
+    lines[index] = line.rstrip("\n")
 
 def checkBits(data, col):
     bitOnes = 0
@@ -21,122 +24,53 @@ def checkBits(data, col):
             bitOnes += 1
         else:
             bitZeroes += 1
-    
+
     if bitOnes > bitZeroes:
         result = "1"
     elif bitOnes < bitZeroes:
         result = "0"
     else:
         result = "-1"
+    
     return result
 
 def filterLines(data, result, col):
     newArr1 = []
-
     for line in data:
         if line[col] == result:
             newArr1.append(line)
 
     return newArr1
 
-for index, line in enumerate(lines):
-    #Formatting array
-    lines[index] = line.rstrip("\n")
-
-
-
-
+#mode = "ox" / mode = "co2". default mode = co2
+def getRatingResult(mode):
+    global lines
+    ratingArr = lines
     
-    
-    
+    repeatedNum = 0
+    for col in range(len(ratingArr[0])):
 
+        if len(ratingArr) == 1:
+            break
 
+        repeatedNum = checkBits(ratingArr, col)
 
+        if mode == "ox":
+            if repeatedNum == "-1":                    
+                ratingArr = filterLines(ratingArr, "1", col)
+            else:
+                ratingArr = filterLines(ratingArr, repeatedNum, col)
+        else:
+            if repeatedNum == "-1" or repeatedNum == "1":                    
+                ratingArr = filterLines(ratingArr, "0", col)
+            else:
+                ratingArr = filterLines(ratingArr, "1", col)
 
+    return ratingArr[0]
 
+ox = getRatingResult("ox")
+co2 = getRatingResult("co2")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-            
-
-for col in count:
-    if col >= int(len(lines)/2): # one is most common
-        gammaRate += "1"
-        epsilonRate += "0"
-    else: # zero is most common
-        gammaRate += "0"
-        epsilonRate += "1"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Array counting "ones" in each row's column
-#-1 -> don't picking "\n"
-count = [0] * (len(lines[0])-1)
-
-gammaRate = ""
-epsilonRate = ""
-
-
-for index, line in enumerate(lines):
-    #Formatting array
-    lines[index] = line.rstrip("\n")
-    
-
-
-    #Iterating each column to count the "ones"
-    #for x in range(len(lines[index])):
-    #    if lines[index][x] == "1":
-    #        count[x] += 1
-            
-
-for col in count:
-    if col >= int(len(lines)/2): # one is most common
-        gammaRate += "1"
-        epsilonRate += "0"
-    else: # zero is most common
-        gammaRate += "0"
-        epsilonRate += "1"
-    
-gammaRateInt = int(gammaRate, 2)
-epsilonRateInt = int(epsilonRate, 2)
-
-print("Gamma: {}\nEpsilon: {}\n".format(gammaRate, epsilonRate))
-print("Gamma(dec): {}\nEpsilon(dec): {}\n".format(gammaRateInt, epsilonRateInt))
-print("Puzzle answer: {}".format(gammaRateInt * epsilonRateInt))
+print("Oxygen generator rating: {}\nCO2 scrubber rating: {}\n"
+    .format(ox, co2))
+print("Life support rating: {}\n".format(int(ox,2) * int(co2,2)))
