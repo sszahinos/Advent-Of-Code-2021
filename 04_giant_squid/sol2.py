@@ -42,22 +42,29 @@ def formatBoards(boards):
                 if col == "":
                     row.remove("")
 
-#Returns the coord[row, col] of the found num
-def findNum(board, draw): #ok
-    coord = [-1, -1]
-    for index1, row in enumerate(board):
-        for index2, col in enumerate(row):
-            if draw == col:
-                coord = [index1, index2]
-                #if draw == "16": print("BOARD: {} \ncoord:{}".format(board, coord) )
-                break
-    return coord
+def checkNum(board, draw):
+    #Returns the coord[row, col] of the found num
+    def findNum(board, draw): #ok
+        coord = [-1, -1]
+        for index1, row in enumerate(board):
+            for index2, col in enumerate(row):
+                if draw == col:
+                    coord = [index1, index2]
+                    #if draw == "16": print("BOARD: {} \ncoord:{}".format(board, coord) )
+                    break
+        return coord
 
-#Marks the found number with a X on the right
-def markNum(board, coord): #ok
-    board[coord[0]][coord[1]] += "X"
-    #print(board[coord[0]][coord[1]])
+    #Marks the found number with a X on the right
+    def markNum(board, coord): #ok
+        board[coord[0]][coord[1]] += "X"
+        #print(board[coord[0]][coord[1]])
     
+    coord = findNum(board, draw)
+    if coord[0] != -1:
+        markNum(board, coord)
+        return True
+    else:
+        return False
 
 def checkRows(board): #ok
     #Check rows
@@ -103,32 +110,21 @@ def getUnmarkedSum(board):
 def playBingo(boards, draws):
     completedBoards = []
 
-    def isLast(completedBoards):
-        count = 0
-        for board in completedBoards:
-            if board == False:
-                count += 1
-
-        if count == len(completedBoards)-1:
+    def isLast():
+        if len(completedBoards) == len(boards)-1:
             return True
-        else:
+        else: 
             return False
 
-
-    for board in boards:
-        completedBoards.append(False)
-
     for draw in draws:
-        for index, board in enumerate(boards): #index se puede borrar, solo sirve para debug
-            if completedBoards[index] == False:
-                coord = findNum(board, draw)
-                if coord[0] != -1: #Num found   
-                    markNum(board, coord)
-                    if checkBoard(board) and isLast(completedBoards) == False:
-                        completedBoards[index] = True
-                    elif checkBoard(board):
-                        print(board)
-                        return getUnmarkedSum(board)
+        for index, board in enumerate(boards):
+            checkNum(board, draw)
+
+            if board not in completedBoards and isLast() == False and checkBoard(board):
+                completedBoards.append(board)
+            elif isLast() and board not in completedBoards and checkBoard(board):
+                return [int(draw), getUnmarkedSum(board)]
+
     return -1
 
 draws = loadDraws()
@@ -136,4 +132,4 @@ loadBoards(boards)
 formatBoards(boards)
 
 finalScore = playBingo(boards, draws)
-print("Final score: {}".format(finalScore))
+print("Final score: {}".format(finalScore[0] * finalScore[1]))
