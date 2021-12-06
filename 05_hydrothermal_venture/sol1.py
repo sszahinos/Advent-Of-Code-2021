@@ -38,6 +38,12 @@ def generateGrid(coords):
             grid[row].append(".")
     return grid
 
+def isStraight(coord):
+    if coord[0] == coord[2] or coord[1] == coord[3]:
+        return True
+    else:
+        return False
+
 def drawLine(coord, grid):
     #x1y1 -> x2y2
     #6,4 -> 2,0
@@ -46,14 +52,12 @@ def drawLine(coord, grid):
     if (coord[0] > coord[2] or (coord[0] == coord[2] and coord[1] > coord[3])): #reverse (left to right and up to down)
         coord[0], coord[2] = coord[2], coord[0]
         coord[1], coord[3] = coord[3], coord[1]
-    print(coord)
 
     while coord[0] != coord[2] or coord[1] != coord[3]:
-        #print("GRID COORD: {}/{}".format(grid[coord[0]],coord[1]))
-        if grid[coord[0]][coord[1]] == ".":
-            grid[coord[0]][coord[1]] = 1
+        if grid[coord[1]][coord[0]] == ".":
+            grid[coord[1]][coord[0]] = 1
         else:
-            grid[coord[0]][coord[1]] += 1
+            grid[coord[1]][coord[0]] += 1
 
         if coord[0] != coord[2]:
             coord[0] += 1
@@ -63,20 +67,33 @@ def drawLine(coord, grid):
         elif coord[1] != coord[3] and coord[1] > coord[3]:
             coord[1] -= 1
 
-    if grid[coord[2]][coord[3]] == ".":
-        grid[coord[2]][coord[3]] = 1
+    if grid[coord[3]][coord[2]] == ".":
+        grid[coord[3]][coord[2]] = 1
     else:
-        grid[coord[2]][coord[3]] += 1
-
-    #print(grid)
+        grid[coord[3]][coord[2]] += 1
 
 def fillGrid(coords, grid):
     for coord in coords:
-        drawLine(coord, grid)
-    #print(grid)
+        if isStraight(coord):
+            drawLine(coord, grid)
+
+def countIntersections(grid):
+    inters = 0
+    for row in grid:
+        for col in row:
+            if col != "." and col != 1:
+                inters += 1
+
+    return inters
+
+def printGrid(grid):
+    for row in grid:
+        for col in row:
+            print(col, end="")
+        print()
 
 grid = generateGrid(coords)
-#print(grid)
 fillGrid(coords, grid)
-print(grid)
+printGrid(grid)
+print("Number of overlapping lines: {}".format(countIntersections(grid)))
 
