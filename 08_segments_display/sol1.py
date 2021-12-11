@@ -7,6 +7,15 @@ if len(sys.argv) != 2:
 #############
 
 inputFile = open(sys.argv[1], "r")
-crabs = inputFile.readlines()[0].split(",")
-for index, item in enumerate(crabs):
-    crabs[index] = int(item)
+inputs = inputFile.readlines()
+
+for index, input in enumerate(inputs):
+    inputs[index] = inputs[index].rstrip("\n").split(" | ")
+
+#[[input][code], ...]
+for index1, input in enumerate(inputs):
+    for index2, part in enumerate(input):
+        inputs[index1][index2] = inputs[index1][index2].split(" ")
+
+###
+
