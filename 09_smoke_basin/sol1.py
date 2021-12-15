@@ -22,44 +22,58 @@ lowPointFound = False
 def addRiskLevel(toAdd):
     global riskLevel
     riskLevel += toAdd +1
-
+    
 for rowIndex, row in enumerate(inputs):
     for colIndex, col in enumerate(row):
-        lowPointFound = False
-        if colIndex == 0: #first col
-            if ((rowIndex == 0 and #first row
-                    inputs[rowIndex][colIndex+1] > col and
-                    inputs[rowIndex+1][colIndex] > col) or  
-                (rowIndex == len(inputs)-1 and #Last row
-                    inputs[rowIndex][colIndex+1] > col and
-                    inputs[rowIndex-1][colIndex] > col) or 
-                (inputs[rowIndex-1][colIndex] > col and #mid row
-                    inputs[rowIndex+1][colIndex] > col and
-                    inputs[rowIndex][colIndex+1] > col)): 
+        if rowIndex == 0: #First row
+            if (colIndex == 0 and 
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex+1][colIndex] > col):
                 lowPointFound = True
-        
-        elif colIndex == len(inputs[row])-1: #Last col
-            if ((rowIndex == 0 and #first row
-                    inputs[rowIndex][colIndex-1] > col and
-                    inputs[rowIndex+1][colIndex] > col) or  
-                (rowIndex == len(inputs)-1 and #Last row
-                    inputs[rowIndex][colIndex-1] > col and
-                    inputs[rowIndex-1][colIndex] > col) or 
-                (inputs[rowIndex-1][colIndex] > col and #mid row
-                    inputs[rowIndex+1][colIndex] > col and
-                    inputs[rowIndex][colIndex-1] > col)): 
+            elif (colIndex == len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex+1][colIndex] > col):
                 lowPointFound = True
-        else: #Mid col ##########REVISAR###########
-            if ((rowIndex == 0 and #first row
-                    inputs[rowIndex][colIndex-1] > col and
-                    inputs[rowIndex+1][colIndex] > col) or  
-                (rowIndex == len(inputs)-1 and #Last row
-                    inputs[rowIndex][colIndex-1] > col and
-                    inputs[rowIndex-1][colIndex] > col) or 
-                (inputs[rowIndex-1][colIndex] > col and #mid row
-                    inputs[rowIndex+1][colIndex] > col and
-                    inputs[rowIndex][colIndex-1] > col)): 
+            elif (colIndex != 0 and colIndex != len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex+1][colIndex] > col):
+                lowPointFound = True
+                
+        elif rowIndex == len(inputs)-1:
+            if (colIndex == 0 and
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex-1][colIndex] > col):
+                lowPointFound = True
+            elif (colIndex == len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex-1][colIndex] > col):
+                lowPointFound = True
+            elif (colIndex != 0 and colIndex != len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex-1][colIndex] > col):
+                lowPointFound = True
+        else:
+            if (colIndex == 0 and
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex-1][colIndex] > col and
+                inputs[rowIndex+1][colIndex] > col):
+                lowPointFound = True
+            elif (colIndex == len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex-1][colIndex] > col and
+                inputs[rowIndex+1][colIndex] > col):
+                lowPointFound = True
+            elif (colIndex != 0 and colIndex != len(inputs[rowIndex])-1 and
+                inputs[rowIndex][colIndex-1] > col and
+                inputs[rowIndex][colIndex+1] > col and
+                inputs[rowIndex-1][colIndex] > col and
+                inputs[rowIndex+1][colIndex] > col):
                 lowPointFound = True
 
         if lowPointFound:
             addRiskLevel(col)
+            lowPointFound = False
+
+print("Risk level: {}".format(riskLevel))
